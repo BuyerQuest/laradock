@@ -141,6 +141,20 @@ RUN if [ ${INSTALL_OPCACHE} = true ]; then \
 # Copy opcache configration
 COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
+RUN mkdir -p /opt/newrelic
+WORKDIR /opt/newrelic
+RUN curl -o /tmp/newrelic.tar.gz http://download.newrelic.com/php_agent/archive/6.7.0.174/newrelic-php5-6.7.0.174-linux.tar.gz
+RUN tar -xzf /tmp/newrelic.tar.gz -C /opt/newrelic
+ENV NR_INSTALL_SILENT true
+ENV NR_INSTALL_KEY ccb45c32dacbbc7465d6c8a15859ecbfedd47ad3
+WORKDIR /opt/newrelic/newrelic-php5-6.7.0.174-linux
+RUN bash ./newrelic-install install
+# Installs the new relic plugin agent from MeetMe
+#WORKDIR /
+#RUN pip install newrelic-plugin-agent
+#ADD ./newrelic-plugin-agent.cfg /etc/newrelic/newrelic-plugin-agent.cfg
+RUN mkdir -p /var/log/newrelic
+RUN mkdir -p /var/run/newrelic
 
 #
 #--------------------------------------------------------------------------
